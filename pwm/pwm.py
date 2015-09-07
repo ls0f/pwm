@@ -1,6 +1,7 @@
 #coding:utf-8
 
 from hashlib import sha1
+import sys
 import hmac
 import re
 import sqlite3
@@ -50,9 +51,8 @@ class PWM(object):
 
     def _get_conn(self):
         if self.db_path is None:
-            raise Exception("db_path is None")
-        # if os.path.exists(self.db_path):
-        #     raise Exception("db_path not exists")
+            print "You didn't set you PWD_DB_PATH ENV"
+            sys.exit(1)
         conn = sqlite3.connect(self.db_path)
         return conn
 
