@@ -1,1 +1,70 @@
-hello,world
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script type="text/javascript" src="http://caligatio.github.io/jsSHA/sha.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+    <!-- <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+    
+        key:<input type="text" id="key" onchange="button_click()"  class="form-control"><P>
+        domain:<input type="text" id="domain" onchange="button_click()"  class="form-control"><P>
+        account:<input type="text" id="account" onchange="button_click()"  class="form-control"><P>
+        passwd:<input type="text" id="passwd" disabled class="form-control"> <p>
+        <!-- <input type="button" value="生成" onclick="button_click()"></<input> -->
+    </div>
+    <script type="text/javascript">
+        function gen_passwd(key, raw){
+            var shaObj = new jsSHA("SHA-1", "TEXT");
+            shaObj.setHMACKey(key, "TEXT");
+            shaObj.update(raw);
+            var hmac = shaObj.getHMAC("B64");
+            console.log(hmac);
+            var passwd = hmac.substring(0, 15);
+            console.log(passwd);
+            passwd = passwd.replace("+", '0');
+            passwd = passwd.replace("/", '1');
+            var list_passwd = passwd.split('');
+            if (!RegExp("[0-9]").test(passwd)){
+                list_passwd[13] = "0123456789"[passwd[13].charCodeAt(0) % 10]
+            };
+            if (!RegExp("[a-z]").test(passwd)){
+                list_passwd[14] = "abcdefghijklmnopqrstuvwxyz"[passwd[14].charCodeAt(0) % 26]
+            };
+            if (!RegExp("[A-Z]").test(passwd)){
+                list_passwd[15] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[passwd[14].charCodeAt(0) % 26]
+            };
+            // charCodeAt
+            var final_passwd = list_passwd.join('');
+            console.log(final_passwd);
+            return final_passwd;
+        }
+        function button_click(){
+            var domain = document.getElementById("domain").value;
+            if (!domain)
+                return false;
+            var account = document.getElementById("account").value;
+            if (!account)
+                return false;
+            var key = document.getElementById("key").value;
+            var raw = account + '@' + domain;
+            var passwd = gen_passwd(key, raw);
+            document.getElementById("passwd").value = passwd;
+            // alert(passwd);
+
+        }
+    </script>
+</body>
+</html>
