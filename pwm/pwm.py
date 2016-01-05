@@ -187,7 +187,7 @@ def main():
         parse.print_help()
         return
 
-    print "passwd:{}".format(pwm.gen_account_passwd(options.domain, options.account))
+    # print "passwd:{}".format(pwm.gen_account_passwd(options.domain, options.account))
 
     # 保存
     if options.save is not None:

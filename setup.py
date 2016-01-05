@@ -7,7 +7,7 @@ DESCRIPTION = "passwd manager tool"
 AUTHOR = "lovedboy"
 AUTHOR_EMAIL = "lovedboy.tk@qq.com"
 URL = "https://github.com/lovedboy/pwm"
-VERSION = '0.1'
+VERSION = '0.1.1'
 
 setup(
     name=NAME,
