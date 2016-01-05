@@ -40,6 +40,8 @@ source ~/.bashrc
 
 `pwm -d github.com -a lovedboy -w`
 
+这里只会保存域名和账号，方便搜索。密码都是通过密钥算出来的。
+
 #### 搜索
 
 可基于账号和域名模糊搜索：
