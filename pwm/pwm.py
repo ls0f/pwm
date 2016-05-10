@@ -188,13 +188,15 @@ def main():
         '-s', '--search',
         help="list your account and domain by search keyword")
     parse.add_option(
-        '-w', '--save', help="save your account and domain", nargs=0)
+        '-w', '--save',
+        help="save your account and domain", nargs=0)
     parse.add_option(
-        '-r', '--remove', help="remove your account and domain by id", nargs=1,
-        type=int)
-    parse.add_option('-b', '--batch',
-                     help="add batch to generate diffrent passwd withoout change domain or account",  # noqa
-                     nargs=1, type=int)
+        '-r', '--remove',
+        help="remove your account and domain by id", nargs=1, type=int)
+    parse.add_option(
+        '-b', '--batch',
+        help="add batch to generate diffrent passwd with same domain and account",  # noqa
+        nargs=1, type=int)
     (options, args) = parse.parse_args()
 
     if options.key is not None:
