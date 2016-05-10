@@ -92,7 +92,6 @@ class PWM(object):
             sql = "PRAGMA table_info(pwm);"
             cur.execute(sql)
             for cid, name, _, _, _, _ in cur.fetchall():
-                print cid, name
                 if name == "batch":
                     return
             else:
