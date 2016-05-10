@@ -90,11 +90,13 @@ class PWM(object):
             cur = self.conn.cursor()
             cur.execute(sql)
             sql = "PRAGMA table_info(pwm);"
+            cur.execute(sql)
             for cid, name, _, _, _, _ in cur.fetchall():
+                print cid, name
                 if name == "batch":
                     return
             else:
-                sql = "ALTER TABLE {} ADD COLUMN batch varchar(4);" % (
+                sql = "ALTER TABLE %s ADD COLUMN batch varchar(4);" % (
                     self.table, )
                 cur.execute(sql)
 
