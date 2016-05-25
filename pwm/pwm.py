@@ -133,7 +133,7 @@ class PWM(object):
             return raw_count
 
     def insert(self, domain, account, batch):
-        self._insert_account(domain, account, batch)
+        self._insert_account(domain, account, batch or '')
         print "save success"
 
     @staticmethod
@@ -158,9 +158,9 @@ class PWM(object):
             keyword = ''
 
         result = self._query_account(keyword)
-        fmt = "%-5s|%-20s|%-15s|%-20s|%-5s"
+        fmt = "%-5s|%-40s|%-35s|%-20s|%-5s"
         print fmt % ("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH")
-        print fmt % ("-"*5, "-"*20, "-"*15, "-"*20, "-"*5)
+        print fmt % ("-"*5, "-"*40, "-"*35, "-"*20, "-"*5)
         for item in result:
             print fmt % (item[0], item[1], item[2],
                          self.gen_account_passwd(item[1], item[2], item[3]),
