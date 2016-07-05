@@ -138,7 +138,7 @@ class PWM(object):
 
     @staticmethod
     def gen_sign_raw(domain, account, batch):
-        raw = "{}@{}".format(account, domain)
+        raw = "{}@{}".format(str(account), str(domain))
         if batch:
             raw = "{}@{}".format(raw, str(batch))
         return raw
