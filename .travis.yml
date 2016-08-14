@@ -11,5 +11,6 @@ python:
 script:
     - python -m unittest discover
     - python setup.py  install
-    - export PWM_DB_PATH="~/.pwm.db"
-    - /bin/sh ./travis/setup.sh
+    - cd travis
+    - export PWM_DB_PATH="pwm.db"
+    - /bin/sh setup.sh
