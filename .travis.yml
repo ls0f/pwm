@@ -1,0 +1,16 @@
+# https://travis-ci.org/lovedboy/pwm
+language: python
+python:
+    - 2.7.8
+    - 2.7
+    - 3.3
+    - 3.4
+    - 3.5
+    - nightly
+
+script:
+    - python -m unittest discover
+    - python setup.py  install
+    - cd travis
+    - export PWM_DB_PATH="pwm.db"
+    - /bin/sh setup.sh

@@ -1,6 +1,7 @@
-#!coding:utf-8
+# coding:utf-8
 
 from hashlib import sha1
+from base64 import b64encode
 import sys
 import hmac
 import re
@@ -11,7 +12,7 @@ from optparse import OptionParser
 
 
 __author = 'lovedb0y'
-__version = '0.1'
+__version = '0.2'
 __package = 'pwm'
 
 
@@ -22,12 +23,15 @@ class PWM(object):
         self.passwd_length = 15
         self.db_path = db_path
         self.table = 'pwm'
-        self._create_table()
 
     def gen_passwd(self, raw):
 
-        h = hmac.new(self.key, raw, sha1)
-        base64 = h.digest().encode("base64")
+        if sys.version_info > (3, 0):
+            h = hmac.new(self.key.encode(), raw.encode(), sha1)
+            base64 = b64encode(h.digest()).decode()
+        else:
+            h = hmac.new(self.key, raw, sha1)
+            base64 = h.digest().encode("base64")
         _passwd = base64[0: self.passwd_length]
         return self._format_passwd(_passwd)
 
@@ -55,13 +59,12 @@ class PWM(object):
 
     def _get_conn(self):
         if self.db_path is None:
-            print "You didn't set you PWD_DB_PATH ENV"
+            print ("You didn't set you PWD_DB_PATH ENV")
             sys.exit(1)
         try:
             conn = sqlite3.connect(self.db_path)
         except sqlite3.OperationalError:
-            print "PWD_DB_PATH: %s is invalid! "\
-                    "(Is it a directory or a file?)" % self.db_path
+            print ("PWD_DB_PATH: {} is invalid! (Is it a directory or a file?)".format(self.db_path))
             sys.exit(1)
         return conn
 
@@ -129,12 +132,14 @@ class PWM(object):
         sql = "delete from {} where id={}".format(self.table, id)
         with self:
             cur = self.conn.cursor()
-            raw_count = cur.execute(sql)
-            return raw_count
+            cur.execute(sql)
+            row_count = cur.rowcount
+            return row_count
 
     def insert(self, domain, account, batch):
+        self._create_table()
         self._insert_account(domain, account, batch or '')
-        print "save success"
+        print ("save success")
 
     @staticmethod
     def gen_sign_raw(domain, account, batch):
@@ -149,35 +154,36 @@ class PWM(object):
         return self.gen_passwd(raw)
 
     def delete(self, id):
+        self._create_table()
         row_count = self._delete(id)
-        print "remove success, %s record(s) removed" % (row_count)
+        print ("remove success, {} record(s) removed".format(row_count, ))
 
     def search(self, keyword):
 
+        self._create_table()
         if keyword == '*':
             keyword = ''
 
         result = self._query_account(keyword)
-        fmt = "%-5s|%-40s|%-35s|%-20s|%-5s"
-        print fmt % ("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH")
-        print fmt % ("-"*5, "-"*40, "-"*35, "-"*20, "-"*5)
+        fmt = "{:5s}|{:40s}|{:35s}|{:20s}|{:5s}"
+        print (fmt.format("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH"))
+        print (fmt.format("-"*5, "-"*40, "-"*35, "-"*20, "-"*5))
         for item in result:
-            print fmt % (item[0], item[1], item[2],
-                         self.gen_account_passwd(item[1], item[2], item[3]),
-                         item[3])
+            passwd = self.gen_account_passwd(item[1], item[2], item[3])
+            print (fmt.format(str(item[0]), item[1], item[2], passwd, item[3]))
 
-        print "\n{} records found.\n".format(len(result))
+        print ("\n{} records found.\n".format(len(result)))
 
 
 def main():
 
     db_path = os.getenv("PWM_DB_PATH", None)
     if db_path is None:
-        print "##########WARNING:############"
-        print "You didn't set you PWD_DB_PATH ENV"
-        print "echo \"export PWM_DB_PATH=your_path\" >> ~/.bashrc"
-        print "source ~/.bashrc"
-        print "###############################"
+        print ("##########WARNING:############")
+        print ("You didn't set you PWD_DB_PATH ENV")
+        print ("echo \"export PWM_DB_PATH=your_path\" >> ~/.bashrc")
+        print ("source ~/.bashrc")
+        print ("###############################")
     parse = OptionParser(version="{} {}".format(__package, __version))
 
     parse.add_option('-k', '--key', help="your secret key", nargs=0)
@@ -194,7 +200,7 @@ def main():
         help="remove your account and domain by id", nargs=1, type=int)
     parse.add_option(
         '-b', '--batch',
-        help="add batch to generate diffrent passwd with same domain and account",  # noqa
+        help="add batch to generate different passwd with same domain and account",  # noqa
         nargs=1, type=int)
     (options, args) = parse.parse_args()
 
@@ -220,9 +226,9 @@ def main():
         parse.print_help()
         return
 
-    print "passwd is :\n{}".format(
+    print ("passwd is :{}".format(
         pwm.gen_account_passwd(
-            options.domain, options.account, options.batch))
+            options.domain, options.account, options.batch)))
 
     # 保存
     if options.save is not None:
