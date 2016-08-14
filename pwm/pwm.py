@@ -1,4 +1,4 @@
-#!coding:utf-8
+# coding:utf-8
 
 from hashlib import sha1
 import sys
@@ -11,7 +11,7 @@ from optparse import OptionParser
 
 
 __author = 'lovedb0y'
-__version = '0.1'
+__version = '0.2'
 __package = 'pwm'
 
 
@@ -22,7 +22,6 @@ class PWM(object):
         self.passwd_length = 15
         self.db_path = db_path
         self.table = 'pwm'
-        self._create_table()
 
     def gen_passwd(self, raw):
 
@@ -129,10 +128,12 @@ class PWM(object):
         sql = "delete from {} where id={}".format(self.table, id)
         with self:
             cur = self.conn.cursor()
-            raw_count = cur.execute(sql)
-            return raw_count
+            cur.execute(sql)
+            row_count = cur.rowcount
+            return row_count
 
     def insert(self, domain, account, batch):
+        self._create_table()
         self._insert_account(domain, account, batch or '')
         print "save success"
 
@@ -149,11 +150,13 @@ class PWM(object):
         return self.gen_passwd(raw)
 
     def delete(self, id):
+        self._create_table()
         row_count = self._delete(id)
-        print "remove success, %s record(s) removed" % (row_count)
+        print "remove success, %s record(s) removed" % (row_count, )
 
     def search(self, keyword):
 
+        self._create_table()
         if keyword == '*':
             keyword = ''
 
@@ -194,7 +197,7 @@ def main():
         help="remove your account and domain by id", nargs=1, type=int)
     parse.add_option(
         '-b', '--batch',
-        help="add batch to generate diffrent passwd with same domain and account",  # noqa
+        help="add batch to generate different passwd with same domain and account",  # noqa
         nargs=1, type=int)
     (options, args) = parse.parse_args()
 
@@ -220,7 +223,7 @@ def main():
         parse.print_help()
         return
 
-    print "passwd is :\n{}".format(
+    print "passwd is :{}".format(
         pwm.gen_account_passwd(
             options.domain, options.account, options.batch))
 
