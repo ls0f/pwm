@@ -165,14 +165,8 @@ class PWM(object):
             keyword = ''
 
         result = self._query_account(keyword)
-        fmt = "{:5s}|{:40s}|{:35s}|{:20s}|{:5s}"
-        print (fmt.format("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH"))
-        print (fmt.format("-"*5, "-"*40, "-"*35, "-"*20, "-"*5))
-        for item in result:
-            passwd = self.gen_account_passwd(item[1], item[2], item[3])
-            print (fmt.format(str(item[0]), item[1], item[2], passwd, item[3]))
+        return result
 
-        print ("\n{} records found.\n".format(len(result)))
 
 
 def main():
@@ -202,7 +196,17 @@ def main():
         '-b', '--batch',
         help="add batch to generate different passwd with same domain and account",  # noqa
         nargs=1, type=int)
+    parse.add_option(
+        '-c', '--copy',
+        help="copy password to clipboard", nargs=0)
     (options, args) = parse.parse_args()
+
+    if options.copy is not None:
+        try:
+            import xerox
+        except ImportError:
+            print ("you should install xerox module")
+            sys.exit(1)
 
     if options.key is not None:
         key = getpass.getpass(prompt="your key:")
@@ -213,7 +217,17 @@ def main():
 
     # 搜索
     if options.search:
-        pwm.search(options.search.strip())
+        result = pwm.search(options.search.strip())
+        fmt = "{:5s}|{:40s}|{:35s}|{:20s}|{:5s}"
+        print (fmt.format("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH"))
+        print (fmt.format("-"*5, "-"*40, "-"*35, "-"*20, "-"*5))
+        for item in result:
+            passwd = pwm.gen_account_passwd(item[1], item[2], item[3])
+            if options.copy is not None:
+                xerox.copy(passwd)
+            print (fmt.format(str(item[0]), item[1], item[2], passwd, item[3]))
+
+        print ("\n{} records found.\n".format(len(result)))
         return
 
     # 删除
@@ -226,9 +240,11 @@ def main():
         parse.print_help()
         return
 
-    print ("passwd is :{}".format(
-        pwm.gen_account_passwd(
-            options.domain, options.account, options.batch)))
+    passwd = pwm.gen_account_passwd(
+            options.domain, options.account, options.batch)
+    if options.copy is not None:
+        xerox.copy(passwd)
+    print ("generate password:{}".format(passwd))
 
     # 保存
     if options.save is not None:
