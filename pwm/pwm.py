@@ -12,7 +12,7 @@ from optparse import OptionParser
 
 
 __author = 'lovedb0y'
-__version = '0.2'
+__version = '0.3'
 __package = 'pwm'
 
 

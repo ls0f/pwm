@@ -8,7 +8,7 @@ DESCRIPTION = "password manager tool"
 AUTHOR = "lovedboy"
 AUTHOR_EMAIL = "lovedboy.tk@qq.com"
 URL = "https://github.com/lovedboy/pwm"
-VERSION = '0.2'
+VERSION = '0.3'
 
 setup(
     name=NAME,
