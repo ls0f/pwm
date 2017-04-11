@@ -46,7 +46,10 @@ source ~/.bashrc
 
 可基于账号和域名模糊搜索：
 
-`pwm -s lovedboy`
+```
+pwm -s lovedboy
+pwm -s github.com -k
+```
 
 #### 安全性
 
