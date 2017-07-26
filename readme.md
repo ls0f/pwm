@@ -57,7 +57,7 @@ pwm -s github.com -k
 
 #### 在线生成
 
-[https://lovedboy.github.io/pwm/](https://lovedboy.github.io/pwm/)
+[https://ls0f.github.io/pwm/](https://ls0f.github.io/pwm/)
 
 
 
