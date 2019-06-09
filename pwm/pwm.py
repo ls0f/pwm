@@ -11,7 +11,7 @@ import getpass
 from optparse import OptionParser
 
 
-__author = 'lovedb0y'
+__author = 'ls0f'
 __version = '0.3'
 __package = 'pwm'
 
@@ -139,11 +139,11 @@ class PWM(object):
     def insert(self, domain, account, batch):
         self._create_table()
         self._insert_account(domain, account, batch or '')
-        print ("save success")
+        print("save success")
 
     @staticmethod
     def gen_sign_raw(domain, account, batch):
-        raw = "{}@{}".format(str(account), str(domain))
+        raw = "{}@{}".format(account.encode("utf-8"), domain.encode("utf-8"))
         if batch:
             raw = "{}@{}".format(raw, str(batch))
         return raw
@@ -156,7 +156,7 @@ class PWM(object):
     def delete(self, id):
         self._create_table()
         row_count = self._delete(id)
-        print ("remove success, {} record(s) removed".format(row_count, ))
+        print("remove success, {} record(s) removed".format(row_count, ))
 
     def search(self, keyword):
 
@@ -168,16 +168,15 @@ class PWM(object):
         return result
 
 
-
 def main():
 
     db_path = os.getenv("PWM_DB_PATH", None)
     if db_path is None:
-        print ("##########WARNING:############")
-        print ("You didn't set you PWD_DB_PATH ENV")
-        print ("echo \"export PWM_DB_PATH=your_path\" >> ~/.bashrc")
-        print ("source ~/.bashrc")
-        print ("###############################")
+        print("##########WARNING:############")
+        print("You didn't set you PWD_DB_PATH ENV")
+        print("echo \"export PWM_DB_PATH=your_path\" >> ~/.bashrc")
+        print("source ~/.bashrc")
+        print("###############################")
     parse = OptionParser(version="{} {}".format(__package, __version))
 
     parse.add_option('-k', '--key', help="your secret key", nargs=0)
@@ -219,15 +218,15 @@ def main():
     if options.search:
         result = pwm.search(options.search.strip())
         fmt = "{:5s}|{:40s}|{:35s}|{:20s}|{:5s}"
-        print (fmt.format("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH"))
-        print (fmt.format("-"*5, "-"*40, "-"*35, "-"*20, "-"*5))
+        print(fmt.format("ID", "DOMAIN", "ACCOUNT", "PASWORD", "BATCH"))
+        print(fmt.format("-"*5, "-"*40, "-"*35, "-"*20, "-"*5))
         for item in result:
             passwd = pwm.gen_account_passwd(item[1], item[2], item[3])
             if options.copy is not None:
                 xerox.copy(passwd)
-            print (fmt.format(str(item[0]), item[1], item[2], passwd, item[3]))
+            print(fmt.format(str(item[0]), item[1].encode("utf-8"), item[2].encode("utf-8"), passwd, item[3]))
 
-        print ("\n{} records found.\n".format(len(result)))
+        print("\n{} records found.\n".format(len(result)))
         return
 
     # 删除
@@ -244,7 +243,7 @@ def main():
             options.domain, options.account, options.batch)
     if options.copy is not None:
         xerox.copy(passwd)
-    print ("generate password:{}".format(passwd))
+    print("generate password:{}".format(passwd))
 
     # 保存
     if options.save is not None:

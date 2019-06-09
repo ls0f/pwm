@@ -7,8 +7,8 @@ NAME = "pwm-tool"
 DESCRIPTION = "password manager tool"
 AUTHOR = "lovedboy"
 AUTHOR_EMAIL = "lovedboy.tk@qq.com"
-URL = "https://github.com/lovedboy/pwm"
-VERSION = '0.3'
+URL = "https://github.com/ls0f/pwm"
+VERSION = '0.3.1'
 
 setup(
     name=NAME,
