@@ -20,12 +20,12 @@
 
 默认使用空字符串作为签名秘钥。
 
-`⇒  pwm -d github.com -a lovedboy`
+`⇒  pwm -d github.com -a ls0f`
 
 使用自己的秘钥签名(**-k**):
 
 ```
-⇒  pwm -d github.com -a lovedboy -k
+⇒  pwm -d github.com -a ls0f -k
 your key:
 ```
 
@@ -38,7 +38,7 @@ echo "export PWM_DB_PATH=your_path" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-`pwm -d github.com -a lovedboy -w`
+`pwm -d github.com -a ls0f -w`
 
 这里只会保存域名和账号，方便搜索。密码都是通过密钥算出来的。
 
@@ -47,7 +47,7 @@ source ~/.bashrc
 可基于账号和域名模糊搜索：
 
 ```
-pwm -s lovedboy
+pwm -s ls0f
 pwm -s github.com -k
 ```
 
