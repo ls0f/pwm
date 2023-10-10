@@ -9,6 +9,8 @@ import sqlite3
 import os
 import getpass
 from optparse import OptionParser
+import sys
+is_py2 = sys.version_info[0] == 2
 
 
 __author = 'ls0f'
@@ -224,7 +226,11 @@ def main():
             passwd = pwm.gen_account_passwd(item[1], item[2], item[3])
             if options.copy is not None:
                 xerox.copy(passwd)
-            print(fmt.format(str(item[0]), item[1].encode("utf-8"), item[2].encode("utf-8"), passwd, item[3]))
+            if is_py2:
+                print(fmt.format(str(item[0]), item[1].encode("utf-8"), item[2].encode("utf-8"), passwd, item[3]))
+            else:
+                print(fmt.format(str(item[0]), item[1], item[2], passwd, item[3] or ''))
+
 
         print("\n{} records found.\n".format(len(result)))
         return
